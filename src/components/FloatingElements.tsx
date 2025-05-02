@@ -1,7 +1,7 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Heart, Sparkles, Confetti, Cake } from "lucide-react";
+import { Heart, Sparkles, Cake, PartyPopper } from "lucide-react";
 
 interface FloatingElementsProps {
   className?: string;
@@ -49,7 +49,7 @@ const FloatingElements: React.FC<FloatingElementsProps> = ({ className }) => {
         size={16}
       />
       
-      {/* Sparkles and Confetti */}
+      {/* Sparkles and Party elements */}
       <Sparkles 
         className="absolute text-birthday-gold animate-float opacity-80" 
         style={{ top: '20%', left: '30%', animationDelay: '0.4s' }}
@@ -60,12 +60,12 @@ const FloatingElements: React.FC<FloatingElementsProps> = ({ className }) => {
         style={{ top: '65%', right: '30%', animationDelay: '1.8s' }}
         size={24}
       />
-      <Confetti 
+      <PartyPopper 
         className="absolute text-birthday-purple animate-float opacity-80" 
         style={{ top: '85%', left: '40%', animationDelay: '1s' }}
         size={22}
       />
-      <Confetti 
+      <PartyPopper 
         className="absolute text-birthday-purple animate-float opacity-80" 
         style={{ top: '30%', right: '20%', animationDelay: '0.2s' }}
         size={18}
