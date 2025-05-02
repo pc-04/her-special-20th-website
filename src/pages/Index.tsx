@@ -13,104 +13,8 @@ import { Slider } from "@/components/ui/slider";
 import { motion } from "framer-motion";
 
 const Index = () => {
-  // Audio player state
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [volume, setVolume] = useState<number>(70);
-  const [showVolumeControl, setShowVolumeControl] = useState<boolean>(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Song selection options
-  const songs = [
-    {
-      title: "Perfect - Ed Sheeran",
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Replace with actual song URL
-    },
-    {
-      title: "All of Me - John Legend",
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", // Replace with actual song URL
-    },
-    {
-      title: "Can't Help Falling in Love",
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", // Replace with actual song URL
-    },
-  ];
-
-  const [currentSongIndex, setCurrentSongIndex] = useState<number>(0);
-
-  // Entry sequence state
   const [showEntrySequence, setShowEntrySequence] = useState<boolean>(true);
-
-  // Initialize audio element
-  useEffect(() => {
-    if (typeof Audio !== "undefined") {
-      audioRef.current = new Audio(songs[currentSongIndex].url);
-      audioRef.current.loop = true;
-      audioRef.current.volume = volume / 100;
-
-      // Setup ended event to handle song looping
-      audioRef.current.addEventListener("ended", () => {
-        if (audioRef.current) {
-          audioRef.current.currentTime = 0;
-          audioRef.current.play();
-        }
-      });
-    }
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.removeEventListener("ended", () => {});
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentSongIndex]);
-
-  // Toggle background music
-  const toggleMusic = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  // Change song
-  const changeSong = (direction: "next" | "prev") => {
-    let newIndex = currentSongIndex;
-
-    if (direction === "next") {
-      newIndex = (currentSongIndex + 1) % songs.length;
-    } else {
-      newIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-    }
-
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setCurrentSongIndex(newIndex);
-
-      // We need to recreate the audio element with the new source
-      audioRef.current = new Audio(songs[newIndex].url);
-      audioRef.current.loop = true;
-      audioRef.current.volume = volume / 100;
-
-      if (isPlaying) {
-        audioRef.current.play();
-      }
-    }
-  };
-
-  // Handle volume change
-  const handleVolumeChange = (value: number[]) => {
-    const newVolume = value[0];
-    setVolume(newVolume);
-
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume / 100;
-    }
-  };
+  const [currentSongIndex, setCurrentSongIndex] = useState<number>(0);
 
   // Handle entry sequence completion
   const handleEntryComplete = () => {
@@ -140,20 +44,21 @@ const Index = () => {
       date: "November 16, 2022",
       title: "First Kiss",
       description:
-        "We shared our first kiss when we were about to leave from the fare we attended together",
+        "I’ll never forget our first kiss — right as we were about to leave the fair, like the universe paused just for us in that perfect moment.",
       imageSrc: "/p12.jpg",
     },
     {
       date: "February 29, 2024",
       title: "Our first fest Together",
-      description: "We were looking the best!",
+      description:
+        "We weren’t just looking our best — we were glowing together, like we were made to be side by side.",
       imageSrc: "/p3.jpg",
     },
     {
       date: "February 8, 2025",
       title: "Our Trip",
       description:
-        "I'll never forget the trip to IITR and how much we enjoyed each other's company.",
+        "I’ll never forget our trip to IITR — not just for the place, but for how deeply I cherished every moment by your side. Being with you made it unforgettable.",
       imageSrc: "/p8.jpg",
     },
   ];
@@ -181,13 +86,14 @@ const Index = () => {
     {
       id: 4,
       src: "/p5.jpg",
-      caption: "When we celebrated your birthday together",
+      caption:
+        "Celebrating your birthday together was pure magic — just you and me",
       alt: "Beach day",
     },
     {
       id: 5,
       src: "/p10.jpg",
-      caption: "When we ate this chocolate together and popped the heart out",
+      caption: "When we shared that chocolate and popped the heart out",
       alt: "Movie night",
     },
     {
@@ -252,62 +158,6 @@ const Index = () => {
       {/* Navigation */}
       <Navigation />
 
-      {/* Music control button group */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end">
-        {/* Volume slider (conditionally shown) */}
-        {showVolumeControl && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="mb-2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-md flex items-center space-x-2"
-          >
-            <span className="text-xs font-medium text-birthday-purple w-24 whitespace-nowrap overflow-hidden text-ellipsis">
-              {songs[currentSongIndex].title}
-            </span>
-            <div className="w-24">
-              <Slider
-                value={[volume]}
-                max={100}
-                step={1}
-                onValueChange={handleVolumeChange}
-                className="w-full"
-              />
-            </div>
-            <button
-              onClick={() => changeSong("prev")}
-              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="Previous song"
-            >
-              ⏮️
-            </button>
-            <button
-              onClick={() => changeSong("next")}
-              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="Next song"
-            >
-              ⏭️
-            </button>
-          </motion.div>
-        )}
-
-        {/* Main music button */}
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button
-            onClick={toggleMusic}
-            onMouseEnter={() => setShowVolumeControl(true)}
-            className="rounded-full bg-white shadow-md hover:shadow-lg transition-all p-3"
-            size="icon"
-          >
-            {isPlaying ? (
-              <Volume2 className="w-6 h-6 text-birthday-rose" />
-            ) : (
-              <VolumeX className="w-6 h-6 text-gray-600" />
-            )}
-          </Button>
-        </motion.div>
-      </div>
-
       {/* Home section */}
       <motion.section
         id="home"
@@ -331,9 +181,11 @@ const Index = () => {
             className="text-lg sm:text-xl text-gray-700 mb-10 max-w-2xl mx-auto"
             variants={fadeInUp}
           >
-            Today we celebrate the amazing person you are and all the joy you
-            bring to everyone around you. Here's to your special day and an
-            incredible year ahead!
+            Today, I celebrate the most beautiful soul I know — you. Your
+            presence fills my life with love, laughter, and meaning. You make
+            every ordinary moment feel magical. Here’s to your special day, my
+            love, and to a year filled with everything your heart desires. I’m
+            so lucky to walk this journey with you
           </motion.p>
 
           <motion.div variants={fadeInUp}>
@@ -524,10 +376,21 @@ const Index = () => {
           <span className="text-xs text-gray-400 transition-colors group-hover:text-birthday-purple">
             ❤️
           </span>
-          <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-64 p-2 bg-white shadow-lg rounded-md text-sm pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+          <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-80 p-2 bg-white shadow-lg rounded-md text-sm pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
             <p className="text-birthday-rose">
-              You found the hidden message! Remember that time we... (add a
-              personal memory here)
+              You found the hidden message! Do you remember the time when we
+              celebrated your birthday for the first time and ab aaj kitna kuch
+              change hogya seriously kitna time hogya never expected ki we will
+              get through so many years but we are still together, sometimes I
+              can't even believe ki tu mere sath kese rehli😂 literally tuhi reh
+              skti thi mere sath aur koi nhi seh pata, every year you give me so
+              many reasons to love u more and why I want you more and more year
+              by year. I'm really lucky to have you by my side and i don't want
+              any other sundar ldki you have almost everything I want and I wish
+              God gives you those extra 2 inches to make it perfect😂 I really
+              love you pooo and hope this year brings you much more happiness
+              than the earlier ones and we will make 10x more memories we hv
+              made before.💋🫶
             </p>
           </div>
         </motion.div>
