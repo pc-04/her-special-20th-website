@@ -7,6 +7,7 @@ import Timeline from "@/components/Timeline";
 import PhotoGallery from "@/components/PhotoGallery";
 import BirthdayWishes from "@/components/BirthdayWishes";
 import ReasonsILoveYou from "@/components/ReasonsILoveYou";
+import EntrySequence from "@/components/EntrySequence";
 import { Cake, Music, Heart, Gift, VolumeX, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -16,6 +17,9 @@ const Index = () => {
   const [audio] = useState<HTMLAudioElement | null>(
     typeof Audio !== "undefined" ? new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3") : null
   );
+  
+  // Entry sequence state
+  const [showEntrySequence, setShowEntrySequence] = useState<boolean>(true);
 
   // Toggle background music
   const toggleMusic = () => {
@@ -28,6 +32,11 @@ const Index = () => {
       }
       setIsPlaying(!isPlaying);
     }
+  };
+
+  // Handle entry sequence completion
+  const handleEntryComplete = () => {
+    setShowEntrySequence(false);
   };
 
   // Set the birthday date (customize this)
@@ -161,6 +170,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen overflow-x-hidden relative">
+      {/* Entry sequence */}
+      {showEntrySequence && (
+        <EntrySequence onComplete={handleEntryComplete} recipientName="[Her Name]" />
+      )}
+
       {/* Navigation */}
       <Navigation />
       
