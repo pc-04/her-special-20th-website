@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import FloatingElements from "@/components/FloatingElements";
@@ -8,39 +7,118 @@ import ReasonsILoveYou from "@/components/ReasonsILoveYou";
 import EntrySequence from "@/components/EntrySequence";
 import BirthdayPhotoFrame from "@/components/BirthdayPhotoFrame";
 import FutureTogether from "@/components/FutureTogether";
-import SpotifyPlayer from "@/components/SpotifyPlayer";
-import { Cake, Heart, Gift } from "lucide-react";
+import { Cake, Music, Heart, Gift, VolumeX, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import { motion } from "framer-motion";
 
 const Index = () => {
+  // Audio player state
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [volume, setVolume] = useState<number>(70);
+  const [showVolumeControl, setShowVolumeControl] = useState<boolean>(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Song selection options
+  const songs = [
+    {
+      title: "Perfect - Ed Sheeran",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Replace with actual song URL
+    },
+    {
+      title: "All of Me - John Legend",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", // Replace with actual song URL
+    },
+    {
+      title: "Can't Help Falling in Love",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", // Replace with actual song URL
+    },
+  ];
+
+  const [currentSongIndex, setCurrentSongIndex] = useState<number>(0);
+
   // Entry sequence state
   const [showEntrySequence, setShowEntrySequence] = useState<boolean>(true);
+
+  // Initialize audio element
+  useEffect(() => {
+    if (typeof Audio !== "undefined") {
+      audioRef.current = new Audio(songs[currentSongIndex].url);
+      audioRef.current.loop = true;
+      audioRef.current.volume = volume / 100;
+
+      // Setup ended event to handle song looping
+      audioRef.current.addEventListener("ended", () => {
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+          audioRef.current.play();
+        }
+      });
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.removeEventListener("ended", () => {});
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSongIndex]);
+
+  // Toggle background music
+  const toggleMusic = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  // Change song
+  const changeSong = (direction: "next" | "prev") => {
+    let newIndex = currentSongIndex;
+
+    if (direction === "next") {
+      newIndex = (currentSongIndex + 1) % songs.length;
+    } else {
+      newIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    }
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setCurrentSongIndex(newIndex);
+
+      // We need to recreate the audio element with the new source
+      audioRef.current = new Audio(songs[newIndex].url);
+      audioRef.current.loop = true;
+      audioRef.current.volume = volume / 100;
+
+      if (isPlaying) {
+        audioRef.current.play();
+      }
+    }
+  };
+
+  // Handle volume change
+  const handleVolumeChange = (value: number[]) => {
+    const newVolume = value[0];
+    setVolume(newVolume);
+
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume / 100;
+    }
+  };
 
   // Handle entry sequence completion
   const handleEntryComplete = () => {
     setShowEntrySequence(false);
   };
 
-  // Animation variants for framer-motion
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
-    },
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
+  // Set the birthday date (customize this)
+  const birthdayDate = new Date("2025-05-15T00:00:00");
 
   // Timeline data
   const timelineEvents = [
@@ -144,6 +222,26 @@ const Index = () => {
     "Simply because you're you, and that's all I could ever want",
   ];
 
+  // Animation variants for framer-motion
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
   return (
     <div className="min-h-screen overflow-x-hidden relative">
       {/* Entry sequence */}
@@ -154,8 +252,61 @@ const Index = () => {
       {/* Navigation */}
       <Navigation />
 
-      {/* Spotify Player */}
-      <SpotifyPlayer />
+      {/* Music control button group */}
+      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end">
+        {/* Volume slider (conditionally shown) */}
+        {showVolumeControl && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="mb-2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-md flex items-center space-x-2"
+          >
+            <span className="text-xs font-medium text-birthday-purple w-24 whitespace-nowrap overflow-hidden text-ellipsis">
+              {songs[currentSongIndex].title}
+            </span>
+            <div className="w-24">
+              <Slider
+                value={[volume]}
+                max={100}
+                step={1}
+                onValueChange={handleVolumeChange}
+                className="w-full"
+              />
+            </div>
+            <button
+              onClick={() => changeSong("prev")}
+              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Previous song"
+            >
+              ⏮️
+            </button>
+            <button
+              onClick={() => changeSong("next")}
+              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Next song"
+            >
+              ⏭️
+            </button>
+          </motion.div>
+        )}
+
+        {/* Main music button */}
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button
+            onClick={toggleMusic}
+            onMouseEnter={() => setShowVolumeControl(true)}
+            className="rounded-full bg-white shadow-md hover:shadow-lg transition-all p-3"
+            size="icon"
+          >
+            {isPlaying ? (
+              <Volume2 className="w-6 h-6 text-birthday-rose" />
+            ) : (
+              <VolumeX className="w-6 h-6 text-gray-600" />
+            )}
+          </Button>
+        </motion.div>
+      </div>
 
       {/* Home section */}
       <motion.section
@@ -186,6 +337,7 @@ const Index = () => {
           </motion.p>
 
           <motion.div variants={fadeInUp}>
+            {/* Replace CountdownTimer with BirthdayPhotoFrame */}
             <BirthdayPhotoFrame />
           </motion.div>
 
@@ -256,7 +408,7 @@ const Index = () => {
         </div>
       </motion.section>
 
-      {/* Future Together section */}
+      {/* Future Together section - replacing Birthday Wishes section */}
       <motion.section
         id="future"
         className="py-20 px-4"
@@ -364,7 +516,7 @@ const Index = () => {
           © {new Date().getFullYear()} - Your special day
         </motion.p>
 
-        {/* Hidden Easter egg */}
+        {/* Hidden Easter egg - to be replaced with something personal */}
         <motion.div
           className="group relative inline-block mt-4 cursor-pointer"
           whileHover={{ scale: 1.1 }}
