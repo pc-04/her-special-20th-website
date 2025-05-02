@@ -184,7 +184,7 @@ const EntrySequence: React.FC<EntrySequenceProps> = ({
             </div>
 
             {noButtonPosition.top > 0 && (
-              <p className="text-lg text-birthday-lavender mt-4 animate-fade-in">
+              <p className="text-lg text-purple-400 mt-4 animate-fade-in">
                 Pretty please?
               </p>
             )}

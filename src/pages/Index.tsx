@@ -10,7 +10,7 @@ import FutureTogether from "@/components/FutureTogether";
 import { Cake, Music, Heart, Gift, VolumeX, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { motion } from "framer-motion"; 
+import { motion } from "framer-motion";
 
 const Index = () => {
   // Audio player state
@@ -18,25 +18,25 @@ const Index = () => {
   const [volume, setVolume] = useState<number>(70);
   const [showVolumeControl, setShowVolumeControl] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  
+
   // Song selection options
   const songs = [
     {
       title: "Perfect - Ed Sheeran",
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" // Replace with actual song URL
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Replace with actual song URL
     },
     {
-      title: "All of Me - John Legend", 
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" // Replace with actual song URL
+      title: "All of Me - John Legend",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", // Replace with actual song URL
     },
     {
-      title: "Can't Help Falling in Love", 
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" // Replace with actual song URL
-    }
+      title: "Can't Help Falling in Love",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", // Replace with actual song URL
+    },
   ];
-  
+
   const [currentSongIndex, setCurrentSongIndex] = useState<number>(0);
-  
+
   // Entry sequence state
   const [showEntrySequence, setShowEntrySequence] = useState<boolean>(true);
 
@@ -46,22 +46,23 @@ const Index = () => {
       audioRef.current = new Audio(songs[currentSongIndex].url);
       audioRef.current.loop = true;
       audioRef.current.volume = volume / 100;
-      
+
       // Setup ended event to handle song looping
-      audioRef.current.addEventListener('ended', () => {
+      audioRef.current.addEventListener("ended", () => {
         if (audioRef.current) {
           audioRef.current.currentTime = 0;
           audioRef.current.play();
         }
       });
     }
-    
+
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
-        audioRef.current.removeEventListener('ended', () => {});
+        audioRef.current.removeEventListener("ended", () => {});
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSongIndex]);
 
   // Toggle background music
@@ -75,37 +76,37 @@ const Index = () => {
       setIsPlaying(!isPlaying);
     }
   };
-  
+
   // Change song
-  const changeSong = (direction: 'next' | 'prev') => {
+  const changeSong = (direction: "next" | "prev") => {
     let newIndex = currentSongIndex;
-    
-    if (direction === 'next') {
+
+    if (direction === "next") {
       newIndex = (currentSongIndex + 1) % songs.length;
     } else {
       newIndex = (currentSongIndex - 1 + songs.length) % songs.length;
     }
-    
+
     if (audioRef.current) {
       audioRef.current.pause();
       setCurrentSongIndex(newIndex);
-      
+
       // We need to recreate the audio element with the new source
       audioRef.current = new Audio(songs[newIndex].url);
       audioRef.current.loop = true;
       audioRef.current.volume = volume / 100;
-      
+
       if (isPlaying) {
         audioRef.current.play();
       }
     }
   };
-  
+
   // Handle volume change
   const handleVolumeChange = (value: number[]) => {
     const newVolume = value[0];
     setVolume(newVolume);
-    
+
     if (audioRef.current) {
       audioRef.current.volume = newVolume / 100;
     }
@@ -122,34 +123,38 @@ const Index = () => {
   // Timeline data
   const timelineEvents = [
     {
-      date: "June 10, 2023",
+      date: "May 1, 2022",
       title: "The Day We Met",
-      description: "We met for the first time at the university library. You were studying for your economics exam, and I asked to borrow a pen.",
-      imageSrc: "/placeholder.svg",
+      description:
+        "We met for the first time in the aakash classroom. I was studying Maths, and you asked me a doubt.",
+      imageSrc: "/p13.png",
     },
     {
-      date: "June 25, 2023",
+      date: "November 16, 2022",
       title: "Our First Date",
-      description: "We went to that little coffee shop by the lake. You ordered a caramel latte and we talked for hours until the staff had to ask us to leave because they were closing.",
-      imageSrc: "/placeholder.svg",
+      description:
+        "We went to that little cafe in Ranjit Avenue. You ordered a red sauce pasta(which I didn't like much) and we talked for hours and you were so shy.",
+      imageSrc: "/p14.jpg",
     },
     {
-      date: "July 15, 2023",
+      date: "November 16, 2022",
       title: "First Kiss",
-      description: "Under the stars at the summer festival, with the fireworks lighting up the sky in the background.",
-      imageSrc: "/placeholder.svg",
+      description:
+        "We shared our first kiss when we were about to leave from the fare we attended together",
+      imageSrc: "/p12.jpg",
     },
     {
-      date: "October 31, 2023",
-      title: "Halloween Together",
-      description: "We had matching costumes and won the 'best couple' prize at the party!",
-      imageSrc: "/placeholder.svg",
+      date: "February 29, 2024",
+      title: "Our first fest Together",
+      description: "We were looking the best!",
+      imageSrc: "/p3.jpg",
     },
     {
-      date: "December 25, 2023",
-      title: "Our First Christmas",
-      description: "I'll never forget your face when you opened that special gift I had been hiding for months.",
-      imageSrc: "/placeholder.svg",
+      date: "February 8, 2025",
+      title: "Our Trip",
+      description:
+        "I'll never forget the trip to IITR and how much we enjoyed each other's company.",
+      imageSrc: "/p8.jpg",
     },
   ];
 
@@ -157,38 +162,38 @@ const Index = () => {
   const photos = [
     {
       id: 1,
-      src: "/placeholder.svg",
-      caption: "Our first selfie together at the park",
-      alt: "Couple selfie at the park",
+      src: "/p6.jpg",
+      caption: "Our first selfie together at the cafe",
+      alt: "Couple selfie at the cafe",
     },
     {
       id: 2,
-      src: "/placeholder.svg",
-      caption: "Weekend trip to the mountains",
+      src: "/p2.jpg",
+      caption: "The first time you wore saree",
       alt: "Couple in the mountains",
     },
     {
       id: 3,
-      src: "/placeholder.svg",
-      caption: "That time we tried cooking together and almost burned the kitchen",
+      src: "/p11.jpg",
+      caption: "Our cutieee photo on my last birthday",
       alt: "Cooking together",
     },
     {
       id: 4,
-      src: "/placeholder.svg",
-      caption: "Beach day with friends",
+      src: "/p5.jpg",
+      caption: "When we celebrated your birthday together",
       alt: "Beach day",
     },
     {
       id: 5,
-      src: "/placeholder.svg",
-      caption: "Movie night at home",
+      src: "/p10.jpg",
+      caption: "When we ate this chocolate together and popped the heart out",
       alt: "Movie night",
     },
     {
       id: 6,
-      src: "/placeholder.svg",
-      caption: "Your birthday last year",
+      src: "/p1.jpg",
+      caption: "Your freshers' party",
       alt: "Birthday celebration",
     },
   ];
@@ -220,40 +225,38 @@ const Index = () => {
   // Animation variants for framer-motion
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
-    }
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
   };
-  
+
   const staggerContainer = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2
-      }
-    }
+        staggerChildren: 0.2,
+      },
+    },
   };
 
   return (
     <div className="min-h-screen overflow-x-hidden relative">
       {/* Entry sequence */}
       {showEntrySequence && (
-        <EntrySequence onComplete={handleEntryComplete} recipientName="[Her Name]" />
+        <EntrySequence onComplete={handleEntryComplete} recipientName="Pooja" />
       )}
 
       {/* Navigation */}
       <Navigation />
-      
+
       {/* Music control button group */}
-      <div
-        className="fixed bottom-6 right-6 z-40 flex flex-col items-end"
-      >
+      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end">
         {/* Volume slider (conditionally shown) */}
         {showVolumeControl && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
@@ -272,14 +275,14 @@ const Index = () => {
               />
             </div>
             <button
-              onClick={() => changeSong('prev')}
+              onClick={() => changeSong("prev")}
               className="p-1 rounded-full hover:bg-gray-100 transition-colors"
               aria-label="Previous song"
             >
               ⏮️
             </button>
             <button
-              onClick={() => changeSong('next')}
+              onClick={() => changeSong("next")}
               className="p-1 rounded-full hover:bg-gray-100 transition-colors"
               aria-label="Next song"
             >
@@ -287,12 +290,9 @@ const Index = () => {
             </button>
           </motion.div>
         )}
-        
+
         {/* Main music button */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button
             onClick={toggleMusic}
             onMouseEnter={() => setShowVolumeControl(true)}
@@ -307,10 +307,10 @@ const Index = () => {
           </Button>
         </motion.div>
       </div>
-      
+
       {/* Home section */}
-      <motion.section 
-        id="home" 
+      <motion.section
+        id="home"
         className="min-h-screen relative flex flex-col items-center justify-center px-4 py-20 bg-gradient-to-br from-birthday-lavender/30 via-white to-birthday-pink/20"
         initial="hidden"
         whileInView="visible"
@@ -318,36 +318,37 @@ const Index = () => {
         variants={staggerContainer}
       >
         <FloatingElements />
-        
+
         <div className="text-center z-10 max-w-4xl mx-auto">
-          <motion.h1 
+          <motion.h1
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-script text-birthday-rose mb-6"
             variants={fadeInUp}
           >
-            Happy 20th Birthday, [Her Name]!
+            Happy 20th Birthday, Pooja!
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             className="text-lg sm:text-xl text-gray-700 mb-10 max-w-2xl mx-auto"
             variants={fadeInUp}
           >
-            Today we celebrate the amazing person you are and all the joy you bring to everyone around you. Here's to your special day and an incredible year ahead!
+            Today we celebrate the amazing person you are and all the joy you
+            bring to everyone around you. Here's to your special day and an
+            incredible year ahead!
           </motion.p>
-          
+
           <motion.div variants={fadeInUp}>
             {/* Replace CountdownTimer with BirthdayPhotoFrame */}
             <BirthdayPhotoFrame />
           </motion.div>
-          
-          <motion.div 
-            className="mt-12"
-            variants={fadeInUp}
-          >
+
+          <motion.div className="mt-12" variants={fadeInUp}>
             <Button
               size="lg"
               className="bg-birthday-rose hover:bg-birthday-pink text-white"
               onClick={() => {
-                document.getElementById("our-story")?.scrollIntoView({ behavior: "smooth" });
+                document
+                  .getElementById("our-story")
+                  ?.scrollIntoView({ behavior: "smooth" });
               }}
             >
               Explore Your Birthday Site
@@ -355,10 +356,10 @@ const Index = () => {
           </motion.div>
         </div>
       </motion.section>
-      
+
       {/* Our Story section */}
-      <motion.section 
-        id="our-story" 
+      <motion.section
+        id="our-story"
         className="py-20 px-4"
         initial="hidden"
         whileInView="visible"
@@ -366,24 +367,25 @@ const Index = () => {
         variants={staggerContainer}
       >
         <div className="max-w-6xl mx-auto">
-          <motion.div 
-            className="text-center mb-16"
-            variants={fadeInUp}
-          >
+          <motion.div className="text-center mb-16" variants={fadeInUp}>
             <Cake className="w-10 h-10 mx-auto text-birthday-rose mb-4" />
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">Our Story</h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">
+              Our Story
+            </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              From the day we met until today, every moment with you has been special. Here's a look back at some of our favorite memories together.
+              From the day we met until today, every moment with you has been
+              special. Here's a look back at some of our favorite memories
+              together.
             </p>
           </motion.div>
-          
+
           <Timeline events={timelineEvents} />
         </div>
       </motion.section>
-      
+
       {/* Memories section */}
-      <motion.section 
-        id="memories" 
+      <motion.section
+        id="memories"
         className="py-20 px-4 bg-gradient-to-br from-birthday-lavender/20 to-white"
         initial="hidden"
         whileInView="visible"
@@ -391,24 +393,24 @@ const Index = () => {
         variants={staggerContainer}
       >
         <div className="max-w-6xl mx-auto">
-          <motion.div 
-            className="text-center mb-16"
-            variants={fadeInUp}
-          >
+          <motion.div className="text-center mb-16" variants={fadeInUp}>
             <Heart className="w-10 h-10 mx-auto text-birthday-rose mb-4" />
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">Memories</h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">
+              Memories
+            </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              A collection of our favorite moments captured in photographs. Each one holds a special place in my heart.
+              A collection of our favorite moments captured in photographs. Each
+              one holds a special place in my heart.
             </p>
           </motion.div>
-          
+
           <PhotoGallery photos={photos} />
         </div>
       </motion.section>
-      
+
       {/* Future Together section - replacing Birthday Wishes section */}
-      <motion.section 
-        id="future" 
+      <motion.section
+        id="future"
         className="py-20 px-4"
         initial="hidden"
         whileInView="visible"
@@ -416,24 +418,25 @@ const Index = () => {
         variants={staggerContainer}
       >
         <div className="max-w-6xl mx-auto">
-          <motion.div 
-            className="text-center mb-16"
-            variants={fadeInUp}
-          >
+          <motion.div className="text-center mb-16" variants={fadeInUp}>
             <Gift className="w-10 h-10 mx-auto text-birthday-rose mb-4" />
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">Our Future Together</h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">
+              Our Future Together
+            </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Beyond this birthday, there are so many adventures, dreams and milestones waiting for us. Here's to our beautiful future together.
+              Beyond this birthday, there are so many adventures, dreams and
+              milestones waiting for us. Here's to our beautiful future
+              together.
             </p>
           </motion.div>
-          
+
           <FutureTogether />
         </div>
       </motion.section>
-      
+
       {/* 20 Reasons section */}
-      <motion.section 
-        id="reasons" 
+      <motion.section
+        id="reasons"
         className="py-20 px-4 bg-gradient-to-br from-white to-birthday-pink/10"
         initial="hidden"
         whileInView="visible"
@@ -441,51 +444,60 @@ const Index = () => {
         variants={staggerContainer}
       >
         <div className="max-w-6xl mx-auto">
-          <motion.div 
-            className="text-center mb-16"
-            variants={fadeInUp}
-          >
+          <motion.div className="text-center mb-16" variants={fadeInUp}>
             <Heart className="w-10 h-10 mx-auto text-birthday-rose mb-4" />
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">20 Reasons Why I Love You</h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">
+              20 Reasons Why I Love You
+            </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              One for each year of your amazing life. Click to reveal them one by one.
+              One for each year of your amazing life. Click to reveal them one
+              by one.
             </p>
           </motion.div>
-          
+
           <ReasonsILoveYou reasons={reasons} />
-          
+
           {/* Personal letter */}
-          <motion.div 
+          <motion.div
             className="mt-20 max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg border border-birthday-lavender/40"
             variants={fadeInUp}
           >
-            <h3 className="text-2xl font-script text-birthday-rose mb-6 text-center">A Letter From My Heart</h3>
+            <h3 className="text-2xl font-script text-birthday-rose mb-6 text-center">
+              A Letter From My Heart
+            </h3>
             <div className="prose prose-pink mx-auto">
-              <p>Dearest [Her Name],</p>
-              
+              <p>Dearest Pooja,</p>
+
               <p>
-                As you celebrate your 20th birthday, I wanted to take a moment to tell you just how much you mean to me. From the first day we met, you've brought so much joy and love into my life.
+                As you celebrate your 20th birthday, I wanted to take a moment
+                to tell you just how much you mean to me. From the first day we
+                met, you've brought so much joy and love into my life.
               </p>
-              
+
               <p>
-                Your kindness, your smile, your laugh – all these little things make every day brighter. You inspire me to be a better person just by being who you are.
+                Your kindness, your smile, your laugh – all these little things
+                make every day brighter. You inspire me to be a better person
+                just by being who you are.
               </p>
-              
+
               <p>
-                I'm so grateful for all the moments we've shared, both big and small, and I look forward to creating countless more memories together.
+                I'm so grateful for all the moments we've shared, both big and
+                small, and I look forward to creating countless more memories
+                together.
               </p>
-              
+
               <p>
-                Happy 20th birthday, my love. May this year bring you everything your heart desires. You deserve all the happiness in the world.
+                Happy 20th birthday, my love. May this year bring you everything
+                your heart desires. You deserve all the happiness in the world.
               </p>
-              
+
               <p>With all my love,</p>
-              <p>[Your Name]</p>
+              <p>Pratham :)</p>
             </div>
           </motion.div>
         </div>
       </motion.section>
-      
+
       {/* Footer */}
       <footer className="py-8 px-4 text-center text-gray-600 bg-white">
         <motion.p
@@ -495,7 +507,7 @@ const Index = () => {
         >
           Made with ❤️ for your 20th birthday
         </motion.p>
-        <motion.p 
+        <motion.p
           className="text-sm mt-2"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1, transition: { delay: 0.2 } }}
@@ -503,15 +515,20 @@ const Index = () => {
         >
           © {new Date().getFullYear()} - Your special day
         </motion.p>
-        
+
         {/* Hidden Easter egg - to be replaced with something personal */}
-        <motion.div 
+        <motion.div
           className="group relative inline-block mt-4 cursor-pointer"
           whileHover={{ scale: 1.1 }}
         >
-          <span className="text-xs text-gray-400 transition-colors group-hover:text-birthday-purple">❤️</span>
+          <span className="text-xs text-gray-400 transition-colors group-hover:text-birthday-purple">
+            ❤️
+          </span>
           <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-64 p-2 bg-white shadow-lg rounded-md text-sm pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-            <p className="text-birthday-rose">You found the hidden message! Remember that time we... (add a personal memory here)</p>
+            <p className="text-birthday-rose">
+              You found the hidden message! Remember that time we... (add a
+              personal memory here)
+            </p>
           </div>
         </motion.div>
       </footer>
