@@ -1,36 +1,113 @@
-
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import FloatingElements from "@/components/FloatingElements";
 import Timeline from "@/components/Timeline";
 import PhotoGallery from "@/components/PhotoGallery";
 import ReasonsILoveYou from "@/components/ReasonsILoveYou";
 import EntrySequence from "@/components/EntrySequence";
-import Birthday20Display from "@/components/Birthday20Display";
+import BirthdayPhotoFrame from "@/components/BirthdayPhotoFrame";
 import FutureTogether from "@/components/FutureTogether";
 import { Cake, Music, Heart, Gift, VolumeX, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { motion } from "framer-motion"; 
 
 const Index = () => {
   // Audio player state
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [audio] = useState<HTMLAudioElement | null>(
-    typeof Audio !== "undefined" ? new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3") : null
-  );
+  const [volume, setVolume] = useState<number>(70);
+  const [showVolumeControl, setShowVolumeControl] = useState<boolean>(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  
+  // Song selection options
+  const songs = [
+    {
+      title: "Perfect - Ed Sheeran",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" // Replace with actual song URL
+    },
+    {
+      title: "All of Me - John Legend", 
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" // Replace with actual song URL
+    },
+    {
+      title: "Can't Help Falling in Love", 
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" // Replace with actual song URL
+    }
+  ];
+  
+  const [currentSongIndex, setCurrentSongIndex] = useState<number>(0);
   
   // Entry sequence state
   const [showEntrySequence, setShowEntrySequence] = useState<boolean>(true);
 
+  // Initialize audio element
+  useEffect(() => {
+    if (typeof Audio !== "undefined") {
+      audioRef.current = new Audio(songs[currentSongIndex].url);
+      audioRef.current.loop = true;
+      audioRef.current.volume = volume / 100;
+      
+      // Setup ended event to handle song looping
+      audioRef.current.addEventListener('ended', () => {
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+          audioRef.current.play();
+        }
+      });
+    }
+    
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.removeEventListener('ended', () => {});
+      }
+    };
+  }, [currentSongIndex]);
+
   // Toggle background music
   const toggleMusic = () => {
-    if (audio) {
+    if (audioRef.current) {
       if (isPlaying) {
-        audio.pause();
+        audioRef.current.pause();
       } else {
-        audio.loop = true;
-        audio.play();
+        audioRef.current.play();
       }
       setIsPlaying(!isPlaying);
+    }
+  };
+  
+  // Change song
+  const changeSong = (direction: 'next' | 'prev') => {
+    let newIndex = currentSongIndex;
+    
+    if (direction === 'next') {
+      newIndex = (currentSongIndex + 1) % songs.length;
+    } else {
+      newIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    }
+    
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setCurrentSongIndex(newIndex);
+      
+      // We need to recreate the audio element with the new source
+      audioRef.current = new Audio(songs[newIndex].url);
+      audioRef.current.loop = true;
+      audioRef.current.volume = volume / 100;
+      
+      if (isPlaying) {
+        audioRef.current.play();
+      }
+    }
+  };
+  
+  // Handle volume change
+  const handleVolumeChange = (value: number[]) => {
+    const newVolume = value[0];
+    setVolume(newVolume);
+    
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume / 100;
     }
   };
 
@@ -140,6 +217,26 @@ const Index = () => {
     "Simply because you're you, and that's all I could ever want",
   ];
 
+  // Animation variants for framer-motion
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
+    }
+  };
+  
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen overflow-x-hidden relative">
       {/* Entry sequence */}
@@ -150,37 +247,102 @@ const Index = () => {
       {/* Navigation */}
       <Navigation />
       
-      {/* Music control button */}
-      <button
-        onClick={toggleMusic}
-        className="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-white shadow-md hover:shadow-lg transition-all"
+      {/* Music control button group */}
+      <div
+        className="fixed bottom-6 right-6 z-40 flex flex-col items-end"
       >
-        {isPlaying ? (
-          <Volume2 className="w-6 h-6 text-birthday-rose" />
-        ) : (
-          <VolumeX className="w-6 h-6 text-gray-600" />
+        {/* Volume slider (conditionally shown) */}
+        {showVolumeControl && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="mb-2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-md flex items-center space-x-2"
+          >
+            <span className="text-xs font-medium text-birthday-purple w-24 whitespace-nowrap overflow-hidden text-ellipsis">
+              {songs[currentSongIndex].title}
+            </span>
+            <div className="w-24">
+              <Slider
+                value={[volume]}
+                max={100}
+                step={1}
+                onValueChange={handleVolumeChange}
+                className="w-full"
+              />
+            </div>
+            <button
+              onClick={() => changeSong('prev')}
+              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Previous song"
+            >
+              ⏮️
+            </button>
+            <button
+              onClick={() => changeSong('next')}
+              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Next song"
+            >
+              ⏭️
+            </button>
+          </motion.div>
         )}
-      </button>
+        
+        {/* Main music button */}
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Button
+            onClick={toggleMusic}
+            onMouseEnter={() => setShowVolumeControl(true)}
+            className="rounded-full bg-white shadow-md hover:shadow-lg transition-all p-3"
+            size="icon"
+          >
+            {isPlaying ? (
+              <Volume2 className="w-6 h-6 text-birthday-rose" />
+            ) : (
+              <VolumeX className="w-6 h-6 text-gray-600" />
+            )}
+          </Button>
+        </motion.div>
+      </div>
       
       {/* Home section */}
-      <section id="home" className="min-h-screen relative flex flex-col items-center justify-center px-4 py-20 bg-gradient-to-br from-birthday-lavender/30 via-white to-birthday-pink/20">
+      <motion.section 
+        id="home" 
+        className="min-h-screen relative flex flex-col items-center justify-center px-4 py-20 bg-gradient-to-br from-birthday-lavender/30 via-white to-birthday-pink/20"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={staggerContainer}
+      >
         <FloatingElements />
         
         <div className="text-center z-10 max-w-4xl mx-auto">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-script text-birthday-rose mb-6 animate-fade-in opacity-0" style={{ animationDelay: "0.3s" }}>
+          <motion.h1 
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-script text-birthday-rose mb-6"
+            variants={fadeInUp}
+          >
             Happy 20th Birthday, [Her Name]!
-          </h1>
+          </motion.h1>
           
-          <p className="text-lg sm:text-xl text-gray-700 mb-10 max-w-2xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: "0.6s" }}>
+          <motion.p 
+            className="text-lg sm:text-xl text-gray-700 mb-10 max-w-2xl mx-auto"
+            variants={fadeInUp}
+          >
             Today we celebrate the amazing person you are and all the joy you bring to everyone around you. Here's to your special day and an incredible year ahead!
-          </p>
+          </motion.p>
           
-          <div className="animate-fade-in opacity-0" style={{ animationDelay: "0.9s" }}>
-            {/* Replace CountdownTimer with Birthday20Display */}
-            <Birthday20Display />
-          </div>
+          <motion.div variants={fadeInUp}>
+            {/* Replace CountdownTimer with BirthdayPhotoFrame */}
+            <BirthdayPhotoFrame />
+          </motion.div>
           
-          <div className="mt-12 animate-fade-in opacity-0" style={{ animationDelay: "1.2s" }}>
+          <motion.div 
+            className="mt-12"
+            variants={fadeInUp}
+          >
             <Button
               size="lg"
               className="bg-birthday-rose hover:bg-birthday-pink text-white"
@@ -190,70 +352,113 @@ const Index = () => {
             >
               Explore Your Birthday Site
             </Button>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
       
       {/* Our Story section */}
-      <section id="our-story" className="py-20 px-4">
+      <motion.section 
+        id="our-story" 
+        className="py-20 px-4"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerContainer}
+      >
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <motion.div 
+            className="text-center mb-16"
+            variants={fadeInUp}
+          >
             <Cake className="w-10 h-10 mx-auto text-birthday-rose mb-4" />
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">Our Story</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               From the day we met until today, every moment with you has been special. Here's a look back at some of our favorite memories together.
             </p>
-          </div>
+          </motion.div>
           
           <Timeline events={timelineEvents} />
         </div>
-      </section>
+      </motion.section>
       
       {/* Memories section */}
-      <section id="memories" className="py-20 px-4 bg-gradient-to-br from-birthday-lavender/20 to-white">
+      <motion.section 
+        id="memories" 
+        className="py-20 px-4 bg-gradient-to-br from-birthday-lavender/20 to-white"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerContainer}
+      >
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <motion.div 
+            className="text-center mb-16"
+            variants={fadeInUp}
+          >
             <Heart className="w-10 h-10 mx-auto text-birthday-rose mb-4" />
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">Memories</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               A collection of our favorite moments captured in photographs. Each one holds a special place in my heart.
             </p>
-          </div>
+          </motion.div>
           
           <PhotoGallery photos={photos} />
         </div>
-      </section>
+      </motion.section>
       
       {/* Future Together section - replacing Birthday Wishes section */}
-      <section id="future" className="py-20 px-4">
+      <motion.section 
+        id="future" 
+        className="py-20 px-4"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerContainer}
+      >
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <motion.div 
+            className="text-center mb-16"
+            variants={fadeInUp}
+          >
             <Gift className="w-10 h-10 mx-auto text-birthday-rose mb-4" />
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">Our Future Together</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Beyond this birthday, there are so many adventures, dreams and milestones waiting for us. Here's to our beautiful future together.
             </p>
-          </div>
+          </motion.div>
           
           <FutureTogether />
         </div>
-      </section>
+      </motion.section>
       
       {/* 20 Reasons section */}
-      <section id="reasons" className="py-20 px-4 bg-gradient-to-br from-white to-birthday-pink/10">
+      <motion.section 
+        id="reasons" 
+        className="py-20 px-4 bg-gradient-to-br from-white to-birthday-pink/10"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerContainer}
+      >
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <motion.div 
+            className="text-center mb-16"
+            variants={fadeInUp}
+          >
             <Heart className="w-10 h-10 mx-auto text-birthday-rose mb-4" />
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">20 Reasons Why I Love You</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               One for each year of your amazing life. Click to reveal them one by one.
             </p>
-          </div>
+          </motion.div>
           
           <ReasonsILoveYou reasons={reasons} />
           
           {/* Personal letter */}
-          <div className="mt-20 max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg border border-birthday-lavender/40">
+          <motion.div 
+            className="mt-20 max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg border border-birthday-lavender/40"
+            variants={fadeInUp}
+          >
             <h3 className="text-2xl font-script text-birthday-rose mb-6 text-center">A Letter From My Heart</h3>
             <div className="prose prose-pink mx-auto">
               <p>Dearest [Her Name],</p>
@@ -277,22 +482,38 @@ const Index = () => {
               <p>With all my love,</p>
               <p>[Your Name]</p>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
       
       {/* Footer */}
       <footer className="py-8 px-4 text-center text-gray-600 bg-white">
-        <p>Made with ❤️ for your 20th birthday</p>
-        <p className="text-sm mt-2">© {new Date().getFullYear()} - Your special day</p>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          Made with ❤️ for your 20th birthday
+        </motion.p>
+        <motion.p 
+          className="text-sm mt-2"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1, transition: { delay: 0.2 } }}
+          viewport={{ once: true }}
+        >
+          © {new Date().getFullYear()} - Your special day
+        </motion.p>
         
         {/* Hidden Easter egg - to be replaced with something personal */}
-        <div className="group relative inline-block mt-4 cursor-pointer">
+        <motion.div 
+          className="group relative inline-block mt-4 cursor-pointer"
+          whileHover={{ scale: 1.1 }}
+        >
           <span className="text-xs text-gray-400 transition-colors group-hover:text-birthday-purple">❤️</span>
           <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-64 p-2 bg-white shadow-lg rounded-md text-sm pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
             <p className="text-birthday-rose">You found the hidden message! Remember that time we... (add a personal memory here)</p>
           </div>
-        </div>
+        </motion.div>
       </footer>
     </div>
   );

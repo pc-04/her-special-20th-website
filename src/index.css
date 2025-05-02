@@ -43,6 +43,13 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Birthday theme colors as CSS variables for animations */
+    --birthday-pink-color: #FFB6C1;
+    --birthday-lavender-color: #E6E6FA;
+    --birthday-gold-color: #FFD700;
+    --birthday-rose-color: #FF69B4;
+    --birthday-purple-color: #9b87f5;
   }
 }
 
@@ -98,4 +105,37 @@ html, body, #root {
 @keyframes blink {
   from, to { border-color: transparent }
   50% { border-color: theme('colors.birthday.rose') }
+}
+
+/* Heart animation for color transition */
+@keyframes heartColorTransition {
+  0%, 100% { color: var(--birthday-rose-color); }
+  50% { color: var(--birthday-pink-color); }
+}
+
+.heart-color-transition {
+  animation: heartColorTransition 4s infinite;
+}
+
+/* Page transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 500ms, transform 500ms;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 500ms, transform 500ms;
 }
