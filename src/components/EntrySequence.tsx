@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Heart, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import FloatingElements from "./FloatingElements";
 import { cn } from "@/lib/utils";
 
@@ -208,7 +208,7 @@ const EntrySequence: React.FC<EntrySequenceProps> = ({ onComplete, recipientName
   }
 
   return (
-    <Dialog open={currentStep !== "completed"} onOpenChange={() => {}}>
+    <Dialog open={true} onOpenChange={() => {}}>
       <DialogContent
         className={cn(
           "max-w-full w-full h-full max-h-full p-0 sm:rounded-none border-0",
@@ -216,6 +216,9 @@ const EntrySequence: React.FC<EntrySequenceProps> = ({ onComplete, recipientName
           "flex items-center justify-center overflow-hidden"
         )}
       >
+        {/* Required DialogTitle for accessibility, visually hidden */}
+        <DialogTitle className="sr-only">Birthday Entry Sequence</DialogTitle>
+
         {/* Skip button */}
         <button
           onClick={handleSkip}
