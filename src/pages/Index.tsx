@@ -2,12 +2,12 @@
 import React, { useState } from "react";
 import Navigation from "@/components/Navigation";
 import FloatingElements from "@/components/FloatingElements";
-import CountdownTimer from "@/components/CountdownTimer";
 import Timeline from "@/components/Timeline";
 import PhotoGallery from "@/components/PhotoGallery";
-import BirthdayWishes from "@/components/BirthdayWishes";
 import ReasonsILoveYou from "@/components/ReasonsILoveYou";
 import EntrySequence from "@/components/EntrySequence";
+import Birthday20Display from "@/components/Birthday20Display";
+import FutureTogether from "@/components/FutureTogether";
 import { Cake, Music, Heart, Gift, VolumeX, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -116,34 +116,6 @@ const Index = () => {
     },
   ];
 
-  // Birthday wishes
-  const wishes = [
-    {
-      id: 1,
-      name: "Emma",
-      relationship: "Best Friend",
-      message: "Happy 20th birthday! I can't believe we've been friends for over 10 years now. You're the most amazing person I know, and I'm so lucky to have you in my life. Here's to many more years of friendship and adventures!",
-    },
-    {
-      id: 2,
-      name: "Michael",
-      relationship: "Brother",
-      message: "Happy birthday sis! Even though I tease you all the time, you know I love you. Hope this year brings you everything you wish for!",
-    },
-    {
-      id: 3,
-      name: "Sarah",
-      relationship: "College Friend",
-      message: "Happy 20th birthday! College wouldn't be the same without you. Thanks for all the late-night study sessions and coffee runs. You're going to crush your twenties!",
-    },
-    {
-      id: 4,
-      name: "Mom & Dad",
-      relationship: "Parents",
-      message: "Our dearest daughter, watching you grow into the amazing young woman you are has been the greatest joy of our lives. Happy 20th birthday! We love you more than words can express.",
-    },
-  ];
-
   // 20 reasons data
   const reasons = [
     "Your smile lights up my entire world",
@@ -204,7 +176,8 @@ const Index = () => {
           </p>
           
           <div className="animate-fade-in opacity-0" style={{ animationDelay: "0.9s" }}>
-            <CountdownTimer targetDate={birthdayDate} />
+            {/* Replace CountdownTimer with Birthday20Display */}
+            <Birthday20Display />
           </div>
           
           <div className="mt-12 animate-fade-in opacity-0" style={{ animationDelay: "1.2s" }}>
@@ -251,18 +224,18 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Birthday Wishes section */}
-      <section id="wishes" className="py-20 px-4">
-        <div className="max-w-4xl mx-auto">
+      {/* Future Together section - replacing Birthday Wishes section */}
+      <section id="future" className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <Gift className="w-10 h-10 mx-auto text-birthday-rose mb-4" />
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">Birthday Wishes</h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-script text-birthday-purple mb-4">Our Future Together</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Everyone who loves you wanted to share their special messages for your 20th birthday.
+              Beyond this birthday, there are so many adventures, dreams and milestones waiting for us. Here's to our beautiful future together.
             </p>
           </div>
           
-          <BirthdayWishes wishes={wishes} />
+          <FutureTogether />
         </div>
       </section>
       

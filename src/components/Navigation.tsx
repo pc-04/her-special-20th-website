@@ -76,7 +76,7 @@ const Navigation: React.FC<NavigationProps> = ({ className }) => {
             { id: "home", label: "Home" },
             { id: "our-story", label: "Our Story" },
             { id: "memories", label: "Memories" },
-            { id: "wishes", label: "Birthday Wishes" },
+            { id: "future", label: "Our Future" }, // Changed from "wishes" to "future"
             { id: "reasons", label: "20 Reasons" },
           ].map((item) => (
             <Button
@@ -119,7 +119,7 @@ const Navigation: React.FC<NavigationProps> = ({ className }) => {
               { id: "home", label: "Home" },
               { id: "our-story", label: "Our Story" },
               { id: "memories", label: "Memories" },
-              { id: "wishes", label: "Birthday Wishes" },
+              { id: "future", label: "Our Future" }, // Changed from "wishes" to "future"
               { id: "reasons", label: "20 Reasons" },
             ].map((item) => (
               <Button
