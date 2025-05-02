@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -69,6 +70,11 @@
     @apply font-script;
   }
 
+  /* Better focus outline for accessibility */
+  :focus-visible {
+    @apply outline-birthday-purple outline-offset-2 outline-2;
+  }
+
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
@@ -81,6 +87,20 @@
   ::-webkit-scrollbar-thumb {
     @apply bg-birthday-pink rounded-full;
   }
+
+  /* Optimize images for better loading */
+  img {
+    @apply transition-opacity duration-300;
+  }
+
+  img.lazyload,
+  img.lazyloading {
+    @apply opacity-0;
+  }
+
+  img.lazyloaded {
+    @apply opacity-100;
+  }
 }
 
 html,
@@ -89,6 +109,16 @@ body,
   height: 100%;
   scroll-behavior: smooth;
   overflow-x: hidden;
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Typing effect animation */
@@ -135,6 +165,15 @@ body,
   animation: heartColorTransition 4s infinite;
 }
 
+/* Interactive element hover states */
+.interactive-hover {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.interactive-hover:hover {
+  @apply scale-[1.02] shadow-md;
+}
+
 /* Page transitions */
 .page-transition-enter {
   opacity: 0;
@@ -156,4 +195,33 @@ body,
   opacity: 0;
   transform: translateY(-10px);
   transition: opacity 500ms, transform 500ms;
+}
+
+/* Improved animation performance with will-change */
+.will-animate {
+  will-change: transform, opacity;
+}
+
+/* Float animation for decorative elements */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Custom utility for better touch feedback on mobile */
+.touch-feedback:active {
+  @apply scale-95 transition-transform duration-150;
+}
+
+/* Better responsive sizing utilities */
+.responsive-text {
+  @apply text-base md:text-lg lg:text-xl;
 }
