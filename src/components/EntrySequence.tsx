@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Heart, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,8 +10,13 @@ interface EntrySequenceProps {
   recipientName: string;
 }
 
-const EntrySequence: React.FC<EntrySequenceProps> = ({ onComplete, recipientName }) => {
-  const [currentStep, setCurrentStep] = useState<"loading" | "first" | "second" | "final" | "completed">("loading");
+const EntrySequence: React.FC<EntrySequenceProps> = ({
+  onComplete,
+  recipientName,
+}) => {
+  const [currentStep, setCurrentStep] = useState<
+    "loading" | "first" | "second" | "final" | "completed"
+  >("loading");
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [noButtonPosition, setNoButtonPosition] = useState({ top: 0, left: 0 });
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
@@ -21,7 +25,9 @@ const EntrySequence: React.FC<EntrySequenceProps> = ({ onComplete, recipientName
   // Initialize audio
   useEffect(() => {
     // Use a romantic instrumental tune URL - replace with actual URL
-    const audioElement = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3");
+    const audioElement = new Audio(
+      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+    );
     audioElement.loop = true;
     audioElement.volume = 0.3;
     setAudio(audioElement);
@@ -44,7 +50,9 @@ const EntrySequence: React.FC<EntrySequenceProps> = ({ onComplete, recipientName
           setTimeout(() => {
             setCurrentStep("first");
             // Start playing music when first overlay appears
-            audio?.play().catch(err => console.log("Audio autoplay prevented:", err));
+            audio
+              ?.play()
+              .catch((err) => console.log("Audio autoplay prevented:", err));
           }, 500);
           return 100;
         }
@@ -75,13 +83,13 @@ const EntrySequence: React.FC<EntrySequenceProps> = ({ onComplete, recipientName
   // Toggle mute/unmute
   const toggleMute = () => {
     if (!audio) return;
-    
+
     if (isMuted) {
       audio.volume = 0.3;
     } else {
       audio.volume = 0;
     }
-    
+
     setIsMuted(!isMuted);
   };
 
@@ -111,7 +119,9 @@ const EntrySequence: React.FC<EntrySequenceProps> = ({ onComplete, recipientName
                 }}
               />
             </div>
-            <p className="text-lg text-birthday-rose mb-4">Loading something special for you...</p>
+            <p className="text-lg text-birthday-rose mb-4">
+              Loading something special for you...
+            </p>
             <div className="w-64 h-2 bg-white/30 rounded-full overflow-hidden">
               <div
                 className="h-full bg-birthday-rose rounded-full transition-all duration-300"
@@ -125,11 +135,18 @@ const EntrySequence: React.FC<EntrySequenceProps> = ({ onComplete, recipientName
         return (
           <div className="flex flex-col items-center justify-center h-full animate-fade-in">
             <h1 className="text-4xl md:text-6xl font-script text-birthday-rose mb-6 text-center">
-              Happy 20th Birthday, {recipientName}!
+              Happy 20th Birthday my dear Poo!
             </h1>
             <div className="relative">
-              <Sparkles className="absolute -top-5 -left-5 text-birthday-gold animate-float" size={20} />
-              <Sparkles className="absolute -bottom-3 -right-3 text-birthday-gold animate-float" style={{ animationDelay: "0.5s" }} size={16} />
+              <Sparkles
+                className="absolute -top-5 -left-5 text-birthday-gold animate-float"
+                size={20}
+              />
+              <Sparkles
+                className="absolute -bottom-3 -right-3 text-birthday-gold animate-float"
+                style={{ animationDelay: "0.5s" }}
+                size={16}
+              />
             </div>
             <FloatingElements className="opacity-30" />
           </div>
@@ -141,7 +158,7 @@ const EntrySequence: React.FC<EntrySequenceProps> = ({ onComplete, recipientName
             <h2 className="text-2xl md:text-3xl font-script text-birthday-rose mb-12 text-center">
               Do you want to see what I made for you?
             </h2>
-            
+
             <div className="flex flex-col md:flex-row gap-6 items-center">
               <Button
                 size="lg"
@@ -150,14 +167,14 @@ const EntrySequence: React.FC<EntrySequenceProps> = ({ onComplete, recipientName
               >
                 Yes
               </Button>
-              
+
               <Button
                 size="lg"
                 className="bg-white/70 hover:bg-white/90 text-birthday-purple text-lg px-10 py-6 rounded-full transition-all duration-300 shadow-md"
-                style={{ 
+                style={{
                   position: "relative",
-                  top: `${noButtonPosition.top}%`, 
-                  left: `${noButtonPosition.left}%`
+                  top: `${noButtonPosition.top}%`,
+                  left: `${noButtonPosition.left}%`,
                 }}
                 onMouseEnter={handleNoButtonInteraction}
                 onClick={handleNoButtonInteraction}
@@ -171,7 +188,7 @@ const EntrySequence: React.FC<EntrySequenceProps> = ({ onComplete, recipientName
                 Pretty please?
               </p>
             )}
-            
+
             <FloatingElements className="opacity-30" />
           </div>
         );
@@ -186,7 +203,7 @@ const EntrySequence: React.FC<EntrySequenceProps> = ({ onComplete, recipientName
             <FloatingElements className="opacity-40" />
           </div>
         );
-        
+
       default:
         return null;
     }
@@ -227,26 +244,46 @@ const EntrySequence: React.FC<EntrySequenceProps> = ({ onComplete, recipientName
           <span className="sr-only">Skip</span>
           <X size={18} />
         </button>
-        
+
         {/* Mute button */}
         <button
           onClick={toggleMute}
           className="absolute top-4 left-4 z-50 text-birthday-rose hover:text-birthday-purple p-2 rounded-full bg-white/30 hover:bg-white/50 transition-all"
         >
           {isMuted ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
               <line x1="23" y1="9" x2="17" y2="15"></line>
               <line x1="17" y1="9" x2="23" y2="15"></line>
             </svg>
           ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
               <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
             </svg>
           )}
         </button>
-        
+
         {renderContent()}
       </DialogContent>
     </Dialog>
